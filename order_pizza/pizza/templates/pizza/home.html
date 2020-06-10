@@ -1,0 +1,45 @@
+{% extends "pizza/base.html" %}
+{% block content %}
+{% load static %}
+<h1>Card</h1>
+{% if cart.products.exists %}
+<table class="table cart-table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>Product Price</th>
+        </tr>
+    </thead>
+    <tbody class='cart-body'>
+        {% for product in cart.products.all %}
+        <tr class='cart-product'>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td><a href="{% url 'product' product.id %}">{{ product.title }}</a>
+                <small>
+                    <form class='form' method='POST' action='{% url "cart_update" %}'>
+                        {% csrf_token %}
+                        <input type='hidden' name='product_id' value='{{ product.id }}' />
+                        <button type='submit' class='btn btn-link'>Remove?</button>
+
+                    </form>
+                </small>
+            </td>
+            <td>{{ product.price }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2"></td>
+            <td><b>Subtotal</b> $<span class='cart-subtotal'>{{ cart.subtotal }}</span></td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <td><b>Total</b> $<span class='cart-total'>{{ cart.total }}</span></td>
+        </tr>
+
+    </tbody>
+</table>
+{% else %}
+<p class='lead'>Cart is empty</p>
+{% endif %}
+{% endblock %}

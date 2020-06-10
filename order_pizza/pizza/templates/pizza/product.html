@@ -1,0 +1,20 @@
+{% extends "pizza/base.html" %}
+{% block content %}
+{% load static %}
+<h1>{{product.tilte}} </h1>
+
+<p>{{product.description}}</p>
+
+<form class='form' method='POST' action='{% url "cart_update" %}'>
+    {% csrf_token %}
+    <input type='hidden' name='product_id' value='{{ product.id }}' />
+    <span class='submit-span'>
+        {% if product in cart.products.all %}
+        <button type='submit' class='btn btn-link'>Remove?</button>
+        {% else %}
+        <button type='submit' class='btn btn-success'>Add to cart</button>
+        {% endif %}
+    </span>
+</form>
+
+{% endblock %}

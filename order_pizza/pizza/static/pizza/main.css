@@ -1,0 +1,31 @@
+.content-section {
+  background: #e0dbd5;
+  padding: 60px 20px;
+  border: 1px solid #0a0707;
+  border-radius: 3px;
+  margin-bottom: 1px;
+}
+
+.dropdown:hover>.dropdown-menu {
+  display: block;
+}
+
+
+/*footer*/
+html {
+    position: relative;
+    min-height: 100%;
+  }
+  body {
+    margin-bottom: 100px; /* Margin bottom by footer height */
+  }
+  .footer {
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 20px;
+    padding-top: 2px;
+    width: 100%;
+    background-color: #f5f5f5;
+    font-size: 11px;
+    text-align: center;
+  }
