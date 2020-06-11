@@ -81,7 +81,7 @@ DATABASES = {
             'user': 'root',
             'password': 'password',
             'host': 'localhost',
-            'database': 'pizza',
+            'database': 'online_pizza',
         },
     }
 }

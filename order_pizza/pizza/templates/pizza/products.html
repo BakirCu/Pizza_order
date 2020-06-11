@@ -1,12 +1,17 @@
 {% extends "pizza/base.html" %}
 {% block content %}
 {% load static %}
+
+
+
 <h1>Products</h1>
 {% for product in products %}
-<p><a href="{% url 'product' product.id %}">{{ product }}</a></p>
-<form class='form' method='POST' action='{% url "cart_update" %}'>
+<p>{{ product }}</p>
+<form class='form' method='POST' action='{% url "cart_add" %}'>
     {% csrf_token %}
+    <input type="number" name="quantity" />
     <input type='hidden' name='product_id' value='{{ product.id }}' />
+    <input type='hidden' name='cart_id' value='{{ cart.id }}' />
     <span class='submit-span'>
         <button type='submit' class='btn btn-success'>Add to cart</button>
     </span>
