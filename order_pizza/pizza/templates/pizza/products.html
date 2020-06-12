@@ -3,20 +3,44 @@
 {% load static %}
 
 
+<div class="container">
+    <h1>Products</h1>
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
 
-<h1>Products</h1>
-{% for product in products %}
-<p>{{ product }}</p>
-<form class='form' method='POST' action='{% url "cart_add" %}'>
-    {% csrf_token %}
-    <input type="number" name="quantity" />
-    <input type='hidden' name='product_id' value='{{ product.id }}' />
-    <input type='hidden' name='cart_id' value='{{ cart.id }}' />
-    <span class='submit-span'>
-        <button type='submit' class='btn btn-success'>Add to cart</button>
-    </span>
-</form>
+            </tr>
+        </thead>
+        {% for product in products %}
+        <tbody>
+            <tr>
+                <td><button type="button" class="btn btn-link" data-toggle="collapse" data-target="#{{product}}">
+                        <h4>{{ product }}</h4>
+                    </button>
+                    <div id="{{product}}" class="collapse">
+                        {{product.description}}
+                    </div>
+                </td>
+                <td>{{product.price}}</td>
+                <td>
+                    <form class='form' method='POST' action='{% url "cart_add" %}'>
+                        {% csrf_token %}
+                        <input type='hidden' name='product_id' value='{{ product.id }}' />
+                        <input type="number" name="quantity" required min="0" step="1" />
+                        <span class='submit-span'>
+                            <button type='submit' class='btn btn-success'>Add to cart</button>
+                        </span>
+                    </form>
+                </td>
+            </tr>
 
-{% endfor %}
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
+
 
 {% endblock %}

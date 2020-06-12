@@ -1,0 +1,73 @@
+{% extends "pizza/base.html" %}
+{% block content %}
+{% load static %}
+{% load poll_extras %}
+
+<h1>Card</h1>
+{% if carts %}
+<table class="table table-borderless">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Product Price</th>
+        </tr>
+    </thead>
+    <tbody class='cart-body'>
+        {% for cart in carts %}
+        <tr class='cart-product'>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ cart.products_id__title }}</td>
+            <td><small>
+                    <div class="btn-group">
+                        <form class='form' method='POST' action='{% url "cart_add" %}'>
+                            {% csrf_token %}
+                            <input type="number" name="quantity" placeholder="{{cart.quantity}}" required min="0"
+                                step="1" />
+                            <input type='hidden' name='product_id' value='{{ cart.products_id }}' />
+                            <span class='submit-span'>
+                                <button type='submit' class='btn btn-success'>Change quantity</button>
+                            </span>
+                        </form>
+
+                        <form class='form' method='POST' action='{% url "cart_remove" %}'>
+                            {% csrf_token %}
+                            <input type='hidden' name='product_id' value='{{ cart.products_id }}' />
+                            <span class='submit-span'>
+                                <button type='submit' class='btn btn-link'>Remove?</button>
+                            </span>
+                        </form>
+                    </div>
+                </small>
+            </td>
+
+            <td>{{ cart.products_id__price|multiplie:cart.quantity }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3"></td>
+            <td><b>Delivery</b> $<span>{{ cart.delivery }}</span></td>
+        </tr>
+        <tr>
+            <td colspan="3"></td>
+            <td><b>Total</b> $<span>{{ cart.total }}</span></td>
+        </tr>
+        <tr>
+            <td colspan="3"></td>
+            <td><b>Total</b> € <span>{{ cart.total|dollars_to_euros }}</span></td>
+        </tr>
+    </tbody>
+</table>
+<div class="container">
+    <div class="row">
+        <div class="col text-center">
+            <a class="btn btn-primary" href="{% url 'order'%}">Order</a>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<p class='lead'>Cart is empty</p>
+{% endif %}
+{% endblock %}

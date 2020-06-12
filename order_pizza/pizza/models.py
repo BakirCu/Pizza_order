@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+User = settings.AUTH_USER_MODEL
 
 
 class Product(models.Model):
@@ -12,7 +14,9 @@ class Product(models.Model):
 
 
 class Cart(models.Model):
-    user = models.CharField(max_length=120)
+    user = models.ForeignKey(User, null=True,
+                             blank=True,
+                             on_delete=models.CASCADE)
     delivery = models.DecimalField(
         decimal_places=2, max_digits=50, default='1.00')
     total = models.DecimalField(
@@ -24,6 +28,13 @@ class Cart(models.Model):
 
 
 class CartProducts(models.Model):
-    card = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     products = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default='1')
+
+
+class Payment(models.Model):
+    name = models.CharField(max_length=120)
+    surname = models.CharField(max_length=120)
+    address = models.CharField(max_length=120)
+    bill = models.DecimalField(decimal_places=2, max_digits=50)

@@ -1,50 +1,9 @@
 {% extends "pizza/base.html" %}
 {% block content %}
 {% load static %}
-{% load poll_extras %}
 
-<h1>Card</h1>
-{% if carts %}
-<table class="table cart-table">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Product Name</th>
-            <th>Product Price</th>
-        </tr>
-    </thead>
-    <tbody class='cart-body'>
-        {% for cart in carts %}
-        <tr class='cart-product'>
-            <th scope="row">{{ forloop.counter }}</th>
-            <td>{{ cart.products_id__title }}
-                <small>
-                    <form class='form' method='POST' action='{% url "cart_add" %}'>
-                        {% csrf_token %}
-                        <input type="number" name="quantity" placeholder="{{cart.quantity}}" />
-                        <input type='hidden' name='product_id' value='{{ products_id }}' />
-                        <input type='hidden' name='cart_id' value='{{ card_id }}' />
-                        <span class='submit-span'>
-                            <button type='submit' class='btn btn-success'>Add to cart</button>
-                        </span>
-                    </form>
-                </small>
-            </td>
-            <td>{{ cart.products_id__price|multiplie:cart.quantity }}</td>
-        </tr>
-        {% endfor %}
-        <tr>
-            <td colspan="2"></td>
-            <td><b>Delivery</b> $<span class='cart-subtotal'>{{ cart.delivery }}</span></td>
-        </tr>
-        <tr>
-            <td colspan="2"></td>
-            <td><b>Total</b> $<span class='cart-total'>{{ cart.total }}</span></td>
-        </tr>
 
-    </tbody>
-</table>
-{% else %}
-<p class='lead'>Cart is empty</p>
-{% endif %}
+<h1><a href="{% url 'products' %}">Meni</a></h1>
+
+
 {% endblock %}
