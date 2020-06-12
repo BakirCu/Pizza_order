@@ -21,12 +21,23 @@
 
     <!-- Navigation bar-->
     <nav class="navbar navbar-expand-md bg-dark navbar-dark text-dark">
-        <a class="navbar-brand text-white" href="{% url 'products'%}">
-            Products
-        </a>
-        <a class="navbar-brand text-white" href="{% url 'cart_home'%}">{{request.session.cart_items}}
-            Cards
-        </a>
+        <div class="navbar-nav ">
+            <a class="nav-item nav-link" href="{% url 'products'%}">
+                Products
+            </a>
+            <a class="nav-item nav-link" href="{% url 'cart_home'%}">{{request.session.cart_items}}
+                Cards
+            </a>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="navbar-nav ml-auto ">
+            <a class="nav-item nav-link" href="#">Profile</a>
+            <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+            <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
 
 
     </nav>
