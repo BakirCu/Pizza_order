@@ -2,6 +2,7 @@ from .models import Cart, Product, CartProducts
 
 
 def bill_update(request, cart_id):
+
     cart = Cart.objects.get(id=cart_id)
     total = cart.delivery
     cart_items = CartProducts.objects.filter(cart_id=cart_id)
