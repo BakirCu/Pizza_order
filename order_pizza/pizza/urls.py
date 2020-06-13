@@ -8,6 +8,7 @@ urlpatterns = [path('', views.home, name='home'),
                path('cart_add', views.cart_add, name='cart_add'),
                path('cart_remove', views.cart_remove, name='cart_remove'),
                path('order', views.order, name='order'),
+               path('profile', views.profile, name='profile'),
                path('register', views.register, name='register'),
                path('login/', auth_views.LoginView.as_view(
                    template_name='pizza/login.html'), name='login'),

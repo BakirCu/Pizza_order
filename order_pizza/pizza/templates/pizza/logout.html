@@ -2,14 +2,9 @@
 {% block content %}
 {% load static %}
 
-<h2>You have been logged out</h2>
-<div class="border-top pt-3">
-    <small class="text-muted">
-        <a href="{% url 'login' %}">Log In Again</a>
-    </small>
+<h2 class="text-center mt-5">You have been logged out</h2>
+<div class="border-top pt-3 text-center">
+    <a href="{% url 'login' %}">Log In Again</a>
 </div>
-
-
-
 
 {% endblock %}

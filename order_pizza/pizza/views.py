@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 from .models import Cart, Product, CartProducts, Payment
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, OrderForm
+from .my_functions import bill_update
 
 
 def home(request):
-    user = None
+    if request.user.is_authenticated:
+        user = request.user.id
+    else:
+        user = None
     cart = Cart.objects.create(user_id=user)
     request.session['cart_id'] = cart.id
     request.session['cart_items'] = 0
@@ -15,91 +20,94 @@ def home(request):
 def products(request):
     products_obj = Product.objects.all()
     cart_id = request.session.get("cart_id", None)
+    if not cart_id:
+        messages.success(request, 'Create cart first')
+        return redirect('home')
     return render(request, 'pizza/products.html', {'products': products_obj,
                                                    'cart': cart_id})
 
 
 def cart_home(request):
     cart_id = request.session.get("cart_id", None)
-    m = CartProducts.objects.filter(cart_id=cart_id)
-    request.session['cart_items'] = len(m)
-    products = CartProducts.objects.values('cart_id',
-                                           'products_id',
-                                           'quantity',
-                                           'cart_id__total',
-                                           'cart_id__delivery',
-                                           'products_id__title',
-                                           'products_id__price',
-                                           ).filter(cart_id=cart_id)
+    if not cart_id:
+        messages.success(request, 'Create cart first')
+        return redirect('home')
+    cart_items = CartProducts.objects.filter(cart_id=cart_id)
+    request.session['cart_items'] = len(cart_items)
+    cart_products = CartProducts.objects.values('cart_id',
+                                                'products_id',
+                                                'quantity',
+                                                'cart_id__total',
+                                                'cart_id__delivery',
+                                                'products_id__title',
+                                                'products_id__price',
+                                                ).filter(cart_id=cart_id)
     cart = Cart.objects.get(id=cart_id)
-
-    return render(request, "pizza/cart.html", {"carts": products,
+    return render(request, "pizza/cart.html", {"carts": cart_products,
                                                "cart": cart})
 
 
 def cart_add(request):
     cart_id = request.session.get("cart_id", None)
+    if not cart_id:
+        messages.success(request, 'Create cart first')
+        return redirect('home')
     product_id = request.POST.get('product_id')
     quantity = request.POST.get('quantity')
-
-    products_cart_update = CartProducts.objects.filter(cart_id=cart_id,
+    if not product_id or not quantity or isinstance(product_id, int) or isinstance(quantity, int) or int(quantity) < 0:
+        messages.success(request, 'Inesert only positive number!')
+        return redirect('home')
+    cart_products_update = CartProducts.objects.filter(cart_id=cart_id,
                                                        products_id=product_id)
-    if not products_cart_update:
+    if not cart_products_update:
         add_to_card = CartProducts(quantity=quantity,
                                    cart_id=cart_id,
                                    products_id=product_id)
         add_to_card.save()
     else:
-        add_to_card = CartProducts(id=products_cart_update.first().id,
-                                   quantity=quantity, cart_id=cart_id, products_id=product_id)
+        add_to_card = CartProducts(id=cart_products_update.first().id,
+                                   quantity=quantity,
+                                   cart_id=cart_id,
+                                   products_id=product_id)
         add_to_card.save()
-    cart = Cart.objects.get(id=cart_id)
-    total = cart.delivery
-    p_k = CartProducts.objects.filter(cart_id=cart_id)
-    request.session['cart_items'] = len(p_k)
-    for product_k in p_k:
-        product = Product.objects.get(id=product_k.products_id)
-        total += product_k.quantity * product.price
-
-    bill = Cart(id=cart.id, total=total,
-                date_of_order=cart.date_of_order, user=cart.user)
-    bill.save()
+    bill_update(request, cart_id)
     return redirect('cart_home')
 
 
 def cart_remove(request):
     cart_id = request.session.get("cart_id", None)
+    if not cart_id:
+        messages.success(request, 'Create cart first')
+        return redirect('home')
     product_id = request.POST.get('product_id')
+    if not product_id or isinstance(product_id, int) or int(product_id) < 1:
+        messages.success(request, 'Inesert only positive number!')
+        return redirect('home')
     product_cart = CartProducts.objects.get(cart_id=cart_id,
                                             products_id=product_id)
     product_cart.delete()
-    cart = Cart.objects.get(id=cart_id)
-    total = cart.delivery
-    p_k = CartProducts.objects.filter(cart_id=cart_id)
-    request.session['cart_items'] = len(p_k)
-    for product_k in p_k:
-        product = Product.objects.get(id=product_k.products_id)
-        total += product_k.quantity * product.price
-
-    bill = Cart(id=cart.id, total=total,
-                date_of_order=cart.date_of_order, user=cart.user)
-    bill.save()
+    bill_update(request, cart_id)
     return redirect('cart_home')
 
 
 def order(request):
-    if request.POST:
-        cart_id = request.session.get("cart_id", None)
-        cart = Cart.objects.get(id=cart_id)
-        name = request.POST.get('Name')
-        surname = request.POST.get('Surname')
-        address = request.POST.get('Address')
-        total = cart.total
-        o = Payment(name=name, surname=surname,
-                    address=address, bill=total)
-        o.save()
-        return redirect('home')
-    return render(request, 'pizza/order.html')
+    if request.method == "POST":
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            cart_id = request.session.get("cart_id", None)
+            cart = Cart.objects.get(id=cart_id)
+            name = form.cleaned_data["name"]
+            surname = form.cleaned_data["surname"]
+            address = form.cleaned_data["address"]
+            total = cart.total
+            order = Payment(name=name, surname=surname,
+                            address=address, bill=total)
+            order.save()
+            messages.success(request, 'Order succeeded')
+            return redirect('home')
+    else:
+        form = OrderForm()
+    return render(request, 'pizza/order.html', {'payment_form': form})
 
 
 def register(request):
@@ -113,3 +121,11 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'pizza/register.html', {'form': form})
+
+
+@login_required(login_url='/login/')
+def profile(request):
+    user_id = request.user.id
+    carts = Cart.objects.filter(user_id=user_id).order_by('-date_of_order')
+
+    return render(request, 'pizza/profile.html', {'carts': carts})

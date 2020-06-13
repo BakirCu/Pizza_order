@@ -78,10 +78,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'user': 'root',
-            'password': 'password',
-            'host': 'localhost',
-            'database': 'online_pizza',
+            'user': 'zhnAwYSjmg',
+            'password': 'kSoY2tbEJE',
+            'host': 'remotemysql.com',
+            'database': 'zhnAwYSjmg',
         },
     }
 }

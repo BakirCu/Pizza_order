@@ -1,0 +1,27 @@
+{% extends "pizza/base.html" %}
+{% block content %}
+{% load static %}
+
+
+<div class="d-flex justify-content-center mt-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date:</th>
+                <th>Bill:</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cart in carts %}
+            <tr>
+                <td>
+                    <h6>{{ cart.date_of_order }}</h6>
+                </td>
+                <td>{{ cart.total}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

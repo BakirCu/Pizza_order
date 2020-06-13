@@ -2,16 +2,14 @@
 {% block content %}
 {% load static %}
 
-
-<div class="container">
-    <h1>Products</h1>
+<h1 class="text-center">Products</h1>
+<div class="table-responsive">
     <table class="table table-borderless">
         <thead>
             <tr>
                 <th>Product</th>
                 <th>Price</th>
                 <th>Quantity</th>
-
             </tr>
         </thead>
         {% for product in products %}
@@ -24,7 +22,7 @@
                         {{product.description}}
                     </div>
                 </td>
-                <td>{{product.price}}</td>
+                <td>{{product.price}} $</td>
                 <td>
                     <form class='form' method='POST' action='{% url "cart_add" %}'>
                         {% csrf_token %}
@@ -36,11 +34,8 @@
                     </form>
                 </td>
             </tr>
-
         </tbody>
         {% endfor %}
     </table>
 </div>
-
-
 {% endblock %}
