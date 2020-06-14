@@ -25,7 +25,7 @@ SECRET_KEY = 'w(4xm+!o&z51p8tq0e&z5^_-0*4k2kg=f^+$i!5q)1p7_3-xws'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['bakircar.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
