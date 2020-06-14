@@ -15,10 +15,10 @@
         {% for product in products %}
         <tbody>
             <tr>
-                <td><button type="button" class="btn btn-link" data-toggle="collapse" data-target="#{{product}}">
+                <td><button type="button" class="btn btn-link" data-toggle="collapse" data-target="#a{{product.id}}">
                         <h4>{{ product }}</h4>
                     </button>
-                    <div id="{{product}}" class="collapse">
+                    <div id="a{{product.id}}" class="collapse">
                         {{product.description}}
                     </div>
                 </td>

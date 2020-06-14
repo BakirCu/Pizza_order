@@ -1,5 +1,5 @@
 from django import forms
-from .models import Payment
+from .models import Order
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -14,5 +14,5 @@ class UserRegisterForm(UserCreationForm):
 class OrderForm(forms.ModelForm):
 
     class Meta:
-        model = Payment
+        model = Order
         fields = ['name', 'surname', 'address']

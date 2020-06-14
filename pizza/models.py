@@ -31,9 +31,15 @@ class CartProducts(models.Model):
     products = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default='1')
 
+    def __str__(self):
+        return str(self.id)
 
-class Payment(models.Model):
+
+class Order(models.Model):
     name = models.CharField(max_length=120)
     surname = models.CharField(max_length=120)
     address = models.CharField(max_length=120)
     bill = models.DecimalField(decimal_places=2, max_digits=50)
+
+    def __str__(self):
+        return str(self.name)

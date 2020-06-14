@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Cart, Product, CartProducts, Payment
+from .models import Cart, Product, CartProducts, Order
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserRegisterForm, OrderForm
@@ -100,14 +100,14 @@ def order(request):
             surname = form.cleaned_data["surname"]
             address = form.cleaned_data["address"]
             total = cart.total
-            order = Payment(name=name, surname=surname,
-                            address=address, bill=total)
+            order = Order(name=name, surname=surname,
+                          address=address, bill=total)
             order.save()
             messages.success(request, 'Order succeeded')
             return redirect('home')
     else:
         form = OrderForm()
-    return render(request, 'pizza/order.html', {'payment_form': form})
+    return render(request, 'pizza/order.html', {'order_form': form})
 
 
 def register(request):
@@ -127,5 +127,4 @@ def register(request):
 def profile(request):
     user_id = request.user.id
     carts = Cart.objects.filter(user_id=user_id).order_by('-date_of_order')
-
     return render(request, 'pizza/profile.html', {'carts': carts})
