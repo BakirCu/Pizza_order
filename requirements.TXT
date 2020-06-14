@@ -4,9 +4,6 @@ astroid==2.1.0
 attrs==19.1.0
 Automat==0.7.0
 autopep8==1.4.3
-azure-common==1.1.25
-azure-storage-blob==2.1.0
-azure-storage-common==2.1.0
 bcrypt==3.1.6
 certifi==2019.11.28
 cffi==1.12.3
